@@ -3,9 +3,13 @@ from app.core.config import settings
 from app.db.database import Base, engine
 from app.models.log_entry import LogEntry
 from app.models.alert import Alert
+from app.api.ingestion import router as ingestion_router
 
-Base.metadata.create_all(bind=engine)
 app = FastAPI()
+Base.metadata.create_all(bind=engine)
+
+app.include_router(ingestion_router)
+
 
 @app.get("/health")
 def health_check():
