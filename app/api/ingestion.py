@@ -4,7 +4,7 @@ from app.db.database import SessionLocal
 from app.models.log_entry import LogEntry
 from app.schemas.log_entry import LogEntryCreate
 from app.detection.engine import run_detection
-
+from app.core.security import verify_credentials
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ def get_db():
         db.close()
         
 @router.post("/logs")
-def create_log(log: LogEntryCreate, db: Session = Depends(get_db)):
+def create_log(log: LogEntryCreate, db: Session = Depends(get_db), user: str = Depends(verify_credentials)):
     new_log = LogEntry(source=log.source, message=log.message)
     db.add(new_log)
     db.commit()
